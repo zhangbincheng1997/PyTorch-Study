@@ -56,25 +56,23 @@ plt.ion()
 for step in range(NUM):
     # real
     real = real_works()
-    # random
-    G_ideas = Variable(torch.randn(BATCH_SIZE, N_IDEAS))
     # fake
-    fake = G(G_ideas)
+    fake = G(Variable(torch.randn(BATCH_SIZE, N_IDEAS)))
     
     # D try to increase this prob
     prob_real = D(real)
     # D try to reduce this prob
     prob_fake = D(fake)
     
-    # log(D(x)) + log(1 - D(G(z)))
-    D_loss = -torch.mean(torch.log(prob_real) + torch.log(1.0 - prob_fake))
-    G_loss = torch.mean(torch.log(1.0 - prob_fake))
-    
     opt_D.zero_grad()
+    # - (log(D(x)) + log(1 - D(G(z))))
+    D_loss = -torch.mean(torch.log(prob_real) + torch.log(1.0 - prob_fake))
     D_loss.backward(retain_variables=True) # reusing computational graph
     opt_D.step()
     
     opt_G.zero_grad()
+    # log(log(1 - D(G(z)))
+    G_loss = torch.mean(torch.log(1.0 - prob_fake))
     G_loss.backward() # None
     opt_G.step()
     

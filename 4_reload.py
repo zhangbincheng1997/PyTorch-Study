@@ -39,12 +39,12 @@ def save():
     plt.plot(x.data.numpy(), output.data.numpy(), 'r-', lw=5)
 
     # way to save all
-    torch.save(net1, 'net.pkl')
+    torch.save(net1, 'net.pth')
     # way to save params
-    torch.save(net1.state_dict(), 'net_params.pkl')
+    torch.save(net1.state_dict(), 'net_params.pth')
 
 def restore_net():
-    net2 = torch.load('net.pkl')
+    net2 = torch.load('net.pth')
     output = net2(x)
 
     plt.subplot(132)
@@ -59,7 +59,7 @@ def restore_params():
         nn.Linear(10, 1)
     )
     
-    net3.load_state_dict(torch.load('net_params.pkl'))
+    net3.load_state_dict(torch.load('net_params.pth'))
     output = net3(x)
 
     plt.subplot(133)
