@@ -16,18 +16,16 @@ utils.create_dir(DIR)
 # G(z)
 class generator(nn.Module):
     # init
-    def __init__(self, d=128):
+    def __init__(self, nc=1, ngf=64, nz=100):
         super(generator, self).__init__()
         # in_channels, out_channels, kernel_size, stride=1, padding=0
-        self.deconv1 = nn.ConvTranspose2d(100, d*8, 4, 1, 0)
-        self.deconv1_bn = nn.BatchNorm2d(d*8)
-        self.deconv2 = nn.ConvTranspose2d(d*8, d*4, 4, 2, 1)
-        self.deconv2_bn = nn.BatchNorm2d(d*4)
-        self.deconv3 = nn.ConvTranspose2d(d*4, d*2, 4, 2, 1)
-        self.deconv3_bn = nn.BatchNorm2d(d*2)
-        self.deconv4 = nn.ConvTranspose2d(d*2, d*1, 4, 2, 1)
-        self.deconv4_bn = nn.BatchNorm2d(d*1)
-        self.deconv5 = nn.ConvTranspose2d(d*1, 1, 4, 2, 1)
+        self.deconv1 = nn.ConvTranspose2d(nz, ngf*4, kernel_size=4, stride=1, padding=0)
+        self.deconv1_bn = nn.BatchNorm2d(ngf*4)
+        self.deconv2 = nn.ConvTranspose2d(ngf*4, ngf*2, kernel_size=4, stride=2, padding=1)
+        self.deconv2_bn = nn.BatchNorm2d(ngf*2)
+        self.deconv3 = nn.ConvTranspose2d(ngf*2, ngf*1, kernel_size=4, stride=2, padding=1)
+        self.deconv3_bn = nn.BatchNorm2d(ngf*1)
+        self.deconv4 = nn.ConvTranspose2d(ngf*1, nc, kernel_size=4, stride=2, padding=1)
 
     # weight init
     def weight_init(self, mean, std):
@@ -41,26 +39,23 @@ class generator(nn.Module):
         x = F.relu(self.deconv1_bn(self.deconv1(input)))
         x = F.relu(self.deconv2_bn(self.deconv2(x)))
         x = F.relu(self.deconv3_bn(self.deconv3(x)))
-        x = F.relu(self.deconv4_bn(self.deconv4(x)))
-        x = F.tanh(self.deconv5(x))
+        x = F.tanh(self.deconv4(x))
         return x
 
 
 # D(x)
 class discriminator(nn.Module):
     # init
-    def __init__(self, d=128):
+    def __init__(self, nc=1, ndf=64):
         super(discriminator, self).__init__()
         # in_channels, out_channels, kernel_size, stride=1, padding=0
-        self.conv1 = nn.Conv2d(1, d*1, 4, 2, 1)
-        # self.conv1_bn = nn.BatchNorm2d(d*1)
-        self.conv2 = nn.Conv2d(d*1, d*2, 4, 2, 1)
-        self.conv2_bn = nn.BatchNorm2d(d*2)
-        self.conv3 = nn.Conv2d(d*2, d*4, 4, 2, 1)
-        self.conv3_bn = nn.BatchNorm2d(d*4)
-        self.conv4 = nn.Conv2d(d*4, d*8, 4, 2, 1)
-        self.conv4_bn = nn.BatchNorm2d(d*8)
-        self.conv5 = nn.Conv2d(d*8, 1, 4, 2, 0)
+        self.conv1 = nn.Conv2d(nc, ndf*1, kernel_size=4, stride=2, padding=1)
+        self.conv1_bn = nn.BatchNorm2d(ndf*1)
+        self.conv2 = nn.Conv2d(ndf*1, ndf*2, kernel_size=4, stride=2, padding=1)
+        self.conv2_bn = nn.BatchNorm2d(ndf*2)
+        self.conv3 = nn.Conv2d(ndf*2, ndf*4, kernel_size=4, stride=2, padding=1)
+        self.conv3_bn = nn.BatchNorm2d(ndf*4)
+        self.conv4 = nn.Conv2d(ndf*4, 1, kernel_size=4, stride=2, padding=0)
 
     # weight init
     def weight_init(self, mean, std):
@@ -71,12 +66,10 @@ class discriminator(nn.Module):
 
     # forward
     def forward(self, input):
-        # x = F.leaky_relu(self.conv1_bn(self.conv1(x)), 0.2)
-        x = F.leaky_relu(self.conv1(input), 0.2)
+        x = F.leaky_relu(self.conv1_bn(self.conv1(input)), 0.2)
         x = F.leaky_relu(self.conv2_bn(self.conv2(x)), 0.2)
         x = F.leaky_relu(self.conv3_bn(self.conv3(x)), 0.2)
-        x = F.leaky_relu(self.conv4_bn(self.conv4(x)), 0.2)
-        x = F.sigmoid(self.conv5(x))
+        x = F.sigmoid(self.conv4(x))
         return x
 
 
@@ -100,8 +93,8 @@ train_loader = torch.utils.data.DataLoader(
     batch_size=BATCH_SIZE, shuffle=True)
 
 # network
-G = generator(128)
-D = discriminator(128)
+G = generator(nc=1, ngf=64, nz=100)
+D = discriminator(nc=1, ndf=64)
 G.weight_init(mean=0.0, std=0.02)
 D.weight_init(mean=0.0, std=0.02)
 if GPU_MODE:

@@ -16,7 +16,7 @@ utils.create_dir(DIR)
 # G(z)
 class generator(nn.Module):
     # init
-    def __init__(self, input_size=32, n_class=10):
+    def __init__(self, input_size=100, n_class=28*28):
         super(generator, self).__init__()
         # in_features, out_features
         self.fc1 = nn.Linear(input_size, 256)
@@ -36,7 +36,7 @@ class generator(nn.Module):
 # D(x)
 class discriminator(nn.Module):
     # init
-    def __init__(self, input_size=32, n_class=10):
+    def __init__(self, input_size=28*28, n_class=1):
         super(discriminator, self).__init__()
         # in_features, out_features
         self.fc1 = nn.Linear(input_size, 1024)
