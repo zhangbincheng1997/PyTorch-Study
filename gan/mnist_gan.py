@@ -36,13 +36,13 @@ class generator(nn.Module):
 # D(x)
 class discriminator(nn.Module):
     # init
-    def __init__(self, input_size=28*28, n_class=1):
+    def __init__(self, input_size=28*28):
         super(discriminator, self).__init__()
         # in_features, out_features
         self.fc1 = nn.Linear(input_size, 1024)
         self.fc2 = nn.Linear(self.fc1.out_features, 512)
         self.fc3 = nn.Linear(self.fc2.out_features, 256)
-        self.fc4 = nn.Linear(self.fc3.out_features, n_class)
+        self.fc4 = nn.Linear(self.fc3.out_features, 1)
 
     # forward
     def forward(self, input):
@@ -73,7 +73,7 @@ train_loader = torch.utils.data.DataLoader(
 
 # network
 G = generator(input_size=100, n_class=28*28)
-D = discriminator(input_size=28*28, n_class=1)
+D = discriminator(input_size=28*28)
 if GPU_MODE:
     G.cuda()
     D.cuda()
