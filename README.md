@@ -15,7 +15,8 @@ set DOWNLOAD_XXXX = True
 > * autoencoder/autoencoder.py 自编码
 > * cnn/cnn.py 卷积神经网络
 > * rnn/rnn.py 循环神经网络
-> * gan/gan.py 生成对抗网络
+> * gan/mnist_gan.py 生成对抗网络 GAN
+> * gan/mnist_dcgan.py 生成对抗网络 DCGAN
 
 ## 安装环境 - 1080Ti
 
@@ -55,7 +56,7 @@ cuDNN v7.0.5 Library for Linux
 Anaconda3.6 https://www.anaconda.com/download/#linux
 Python 3.6 version * - Download
 
-5. 关闭 BIOS secure boot
+5. 关闭 BIOS 安全启动
 
 6. 进入命令行模式: ctrl + alt + F1 (关键)
 
@@ -96,7 +97,7 @@ sudo chmod a+x NVIDIA-Linux-x86_64-390.20.run
 # 安装
 sudo sh cuda_9.0.176_384.81_linux.run
 # 询问是否安装附带驱动，选择N
-vim .bashrc
+vim ~/.bashrc
 # 添加
 export PATH=$PATH:/usr/local/cuda-9.0/bin
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64
@@ -124,9 +125,9 @@ nvcc -V
 
 ### 安装 Anaconda 工具包
 ```
-# 全部默认
+# 默认
 ./Anaconda3-5.0.1-Linux-x86_64.sh
-# 同步配置
+# 同步
 source ~/.bashrc
 ```
 
@@ -181,4 +182,4 @@ jupyter notebook
 7. 远程访问:
 ssh username@address_of_remote -L localhost:1234:localhost:8888
 
-8. 浏览器访问: localhost:12345
+8. 浏览器访问: localhost:1234
