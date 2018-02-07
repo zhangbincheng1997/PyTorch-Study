@@ -3,12 +3,10 @@ import matplotlib.pyplot as plt
 
 
 def create_dir(path=''):
-    if not os.path.isdir(path):
-        os.mkdir(path)
     if not os.path.isdir(path + '/Random_results'):
-        os.mkdir(path + '/Random_results')
+        os.makedirs(path + '/Random_results')
     if not os.path.isdir(path + '/Fixed_results'):
-        os.mkdir(path + '/Fixed_results')
+        os.makedirs(path + '/Fixed_results')
 
 
 def save_result(image, num_epoch, show=False, save=False, path='result.png'):
@@ -24,7 +22,10 @@ def save_result(image, num_epoch, show=False, save=False, path='result.png'):
         i = k // 5
         j = k % 5
         ax[i, j].cla()
-        ax[i, j].imshow(image[k, :].cpu().data.view(28, 28).numpy(), cmap='gray')
+        if image[k, :].cpu().data.numpy().size == 784:
+            ax[i, j].imshow(image[k, :].cpu().data.view(28, 28).numpy(), cmap='gray')
+        else:
+            ax[i, j].imshow(image[k, 0].cpu().data.numpy(), cmap='gray')
 
     label = 'Epoch {0}'.format(num_epoch)
     fig.text(0.5, 0.04, label, ha='center')
@@ -66,4 +67,4 @@ def save_animation(num_epoch, prefix, path):
     for e in range(num_epoch):
         img_name = prefix + str(e + 1) + '.png'
         images.append(imageio.imread(img_name))
-    imageio.mimsave(path, images, fps=5)
+    imageio.mimsave(path, images, fps=10)

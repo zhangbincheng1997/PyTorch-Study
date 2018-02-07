@@ -6,9 +6,11 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 from torchvision import datasets, transforms
+# from torch.nn import DataParallel # multi-gpu
+from time import time
 
 
-GPU_MODE = False
+GPU_MODE = True
 DIR = 'MNIST_GAN_results'
 utils.create_dir(DIR)
 
@@ -74,9 +76,14 @@ train_loader = torch.utils.data.DataLoader(
 # network
 G = generator(input_size=100, n_class=28*28)
 D = discriminator(input_size=28*28)
+# G = DataParallel(G)
+# D = DataParallel(D)
 if GPU_MODE:
     G.cuda()
     D.cuda()
+
+print(G)
+print(D)
 
 # Binary Cross Entropy Loss
 BCE_loss = nn.BCELoss()
@@ -92,13 +99,10 @@ if GPU_MODE:
 else:
     fixed_z = Variable(fixed_z, volatile=True)
 
-
-########## train ##########
-print("Training start!!!...")
-
 train_hist = {}
 train_hist['D_losses'] = []
 train_hist['G_losses'] = []
+train_hist['per_epoch_times'] = []
 
 y_real = torch.ones(BATCH_SIZE, 1)
 y_fake = torch.zeros(BATCH_SIZE, 1)
@@ -107,9 +111,14 @@ if GPU_MODE:
 else:
     y_real, y_fake = Variable(y_real), Variable(y_fake)
 
+########## train ##########
+print("Training start!!!...")
+start_time = time()
+
 for epoch in range(EPOCH):
     D_losses = []
     G_losses = []
+    epoch_start_time = time()
     for step, (x, y) in enumerate(train_loader):
         if step == train_loader.dataset.__len__() // BATCH_SIZE:
             break
@@ -149,9 +158,11 @@ for epoch in range(EPOCH):
         G_optimizer.step()
         G_losses.append(G_train_loss.data[0])
 
+    epoch_end_time = time()
+    per_epoch_time = epoch_end_time - epoch_start_time
     ########## summary ##########
-    print('[%d/%d]: loss_d: %.3f, loss_g: %.3f' %
-          ((epoch + 1), EPOCH,
+    print('[%d/%d] - time: %.2f, loss_d: %.3f, loss_g: %.3f' %
+          ((epoch + 1), EPOCH, per_epoch_time,
            torch.mean(torch.FloatTensor(D_losses)),
            torch.mean(torch.FloatTensor(G_losses))))
 
@@ -173,6 +184,11 @@ for epoch in range(EPOCH):
     utils.save_result(fixed_image, (epoch+1), save=True, path=fixed_p)
     train_hist['D_losses'].append(torch.mean(torch.FloatTensor(D_losses)))
     train_hist['G_losses'].append(torch.mean(torch.FloatTensor(G_losses)))
+    train_hist['per_epoch_times'].append(per_epoch_time)
+
+end_time = time()
+total_time = end_time - end_time
+print("Avg per epoch time: %.2f, total %d epochs time: %.2f" % (torch.mean(torch.FloatTensor(train_hist['per_epoch_times'])), EPOCH, total_time))
 print("Training finish!!!...")
 
 # save parameters
