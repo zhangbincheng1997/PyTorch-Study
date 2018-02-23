@@ -31,7 +31,7 @@ sudo apt-get -f install
 sudo dpkg -i xxx
 sudo apt-get -f install
 ```
-3. 设置屏幕分辨率
+3. 设置屏幕分辨率 (可无视)
 ```
 vim .profile
 # 添加
@@ -64,8 +64,8 @@ Python 3.6 version * - Download
 
 8. 禁用 nouveau 显卡驱动: 
 ```
-sudo vim /etc/modprobe.d/blacklist.conf
 # 添加
+sudo vim /etc/modprobe.d/blacklist.conf
 blacklist vga16fb 
 blacklist nouveau 
 blacklist rivafb 
@@ -83,7 +83,7 @@ lsmod | grep nouveau
 ```
 # 权限
 sudo chmod a+x NVIDIA-Linux-x86_64-390.20.run
-# 安装
+# 安装 询问'Would you like to run the nvidia-xconfig utility to automatically update your X Configuration file so set the NVIDIA X driver will be used when you restart X?'，选择N
 sudo sh NVIDIA-Linux-x86_64-390.25.run -no-x-check -no-nouveau-check -no-opengl-files
 # -no-x-check # 安装驱动时关闭 X 服务
 # -no-nouveau-check # 安装驱动时禁用 nouveau 驱动
@@ -93,12 +93,11 @@ sudo sh NVIDIA-Linux-x86_64-390.25.run -no-x-check -no-nouveau-check -no-opengl-
 ### 安装 CUDA 工具包
 ```
 # 权限
-sudo chmod a+x NVIDIA-Linux-x86_64-390.20.run
-# 安装
+sudo chmod a+x cuda_9.0.176_384.81_linux.run
+# 安装 询问'Install NVIDIA Accelerated Graphics Driver for Linux-x86_64 384.81?'，选择N
 sudo sh cuda_9.0.176_384.81_linux.run
-# 询问是否安装附带驱动，选择N
-vim ~/.bashrc
 # 添加
+vim ~/.bashrc
 export PATH=$PATH:/usr/local/cuda-9.0/bin
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64
 ```
@@ -125,9 +124,11 @@ nvcc -V
 
 ### 安装 Anaconda 工具包
 ```
-# 默认
+# 权限
+sudo chmod a+x Anaconda3-5.0.1-Linux-x86_64.sh
+# 安装 询问安装路径，默认回车 询问环境变量，选择yes
 ./Anaconda3-5.0.1-Linux-x86_64.sh
-# 同步
+# 重新加载环境变量
 source ~/.bashrc
 ```
 
