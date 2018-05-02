@@ -85,9 +85,9 @@ lsmod | grep nouveau
 sudo chmod a+x NVIDIA-Linux-x86_64-390.20.run
 # 安装 询问'Would you like to run the nvidia-xconfig utility to automatically update your X Configuration file so set the NVIDIA X driver will be used when you restart X?'，选择N
 sudo sh NVIDIA-Linux-x86_64-390.25.run -no-x-check -no-nouveau-check -no-opengl-files
-# -no-x-check # 安装驱动时关闭 X 服务
-# -no-nouveau-check # 安装驱动时禁用 nouveau 驱动
-# -no-opengl-files # 只安装驱动文件，不安装 opengl 文件
+# -no-x-check # 安装驱动时不检测正在使用的 X 服务器
+# -no-nouveau-check # 安装驱动时不检测正在使用的 nouveau 驱动
+# -no-opengl-files # 只安装驱动文件，不安装 OpenGL 相关的驱动文件
 ```
 
 ### 安装 CUDA 工具包
