@@ -10,8 +10,6 @@
 > * 6_optimizer.py 优化器
 
 ## 高阶
-download it if you don't have it  
-set DOWNLOAD_XXXX = True  
 > * autoencoder/autoencoder.py 自编码
 > * cnn/cnn.py 卷积神经网络
 > * rnn/rnn.py 循环神经网络
@@ -19,25 +17,6 @@ set DOWNLOAD_XXXX = True
 > * gan/mnist_dcgan.py 生成对抗网络 DCGAN
 
 ## 安装环境 - 1080Ti
-
-### Ubuntu 16.04
-1. 安装谷歌浏览器: https://www.google.cn/chrome/browser/desktop/
-```
-sudo dpkg -i xxx
-sudo apt-get -f install
-```
-2. 安装搜狗输入法: https://pinyin.sogou.com/linux/
-```
-sudo dpkg -i xxx
-sudo apt-get -f install
-```
-3. 设置屏幕分辨率 (可无视)
-```
-vim .profile
-# 添加
-xrandr --newmode "1920x1080_60.00" 173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync
-xrandr --addmode VGA-1 "1920x1080_60.00"
-```
 
 ### 准备工作
 1. 下载 NVIDIA390:
@@ -79,22 +58,22 @@ sudo reboot
 lsmod | grep nouveau
 ```
 
-### 安装 NVIDIA 驱动
+### 安装 NVIDIA
 ```
 # 权限
 sudo chmod a+x NVIDIA-Linux-x86_64-390.20.run
-# 安装 询问'Would you like to run the nvidia-xconfig utility to automatically update your X Configuration file so set the NVIDIA X driver will be used when you restart X?'，选择N
+# 安装 询问'Would you like to run the nvidia-xconfig utility......'，选择N
 sudo sh NVIDIA-Linux-x86_64-390.25.run -no-x-check -no-nouveau-check -no-opengl-files
 # -no-x-check # 安装驱动时关闭 X 服务
 # -no-nouveau-check # 安装驱动时禁用 nouveau 驱动
 # -no-opengl-files # 只安装驱动文件，不安装 opengl 文件
 ```
 
-### 安装 CUDA 工具包
+### 安装 CUDA
 ```
 # 权限
 sudo chmod a+x cuda_9.0.176_384.81_linux.run
-# 安装 询问'Install NVIDIA Accelerated Graphics Driver for Linux-x86_64 384.81?'，选择N
+# 安装 询问'Install NVIDIA Accelerated Graphics Driver for......'，选择N
 sudo sh cuda_9.0.176_384.81_linux.run
 # 添加
 vim ~/.bashrc
@@ -102,7 +81,7 @@ export PATH=$PATH:/usr/local/cuda-9.0/bin
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64
 ```
 
-### 安装 cuDNN 框架
+### 安装 cuDNN
 ```
 # 解压
 tar -zxvf cudnn-9.0-linux-x64-v7.tgz
@@ -122,7 +101,7 @@ nvidia-smi
 nvcc -V
 ```
 
-### 安装 Anaconda 工具包
+### 安装 Anaconda
 ```
 # 权限
 sudo chmod a+x Anaconda3-5.0.1-Linux-x86_64.sh
@@ -132,29 +111,22 @@ sudo chmod a+x Anaconda3-5.0.1-Linux-x86_64.sh
 source ~/.bashrc
 ```
 
-### 安装深度学习框架
-1. TensorFlow:
-```
-pip install tensorflow-gpu
-```
-
-2. Keras:
-```
-pip install keras
-```
-
-3. PyTorch:
+### 安装 PyTorch
 ```
 pip install http://download.pytorch.org/whl/cu90/torch-0.3.0.post4-cp36-cp36m-linux_x86_64.whl
 pip install torchvision
 ```
 
-### 安装交互式笔记本
+### 安装 Jupyter
 1. 安装 Jupyter:
+```
 pip install jupyter
+```
 
 2. 安装远程登录:
+```
 sudo apt-get install openssh-server
+```
 
 3. 生成加密密文
 ```
@@ -162,25 +134,32 @@ In [1]: from notebook.auth import passwd
 In [2]: passwd()
 Enter password: 
 Verify password: 
-Out[2]: 'sha1:......'
+Out[2]: 'sha1:......加密密文'
 ```
 
 4. 生成配置文件:
+```
 jupyter notebook --generate-config
+```
 
 5. 修改配置文件:
-vim ~/.jupyter/jupyter_notebook_config.py 
 ```
+vim ~/.jupyter/jupyter_notebook_config.py
+# 修改
 c.NotebookApp.ip = '*'
-c.NotebookApp.password = u'sha1:...加密密文'
+c.NotebookApp.password = u'sha1:......加密密文'
 c.NotebookApp.open_browser = False
 c.NotebookApp.port = 8888
 ```
 
 6. 启动 Jupyter:
+```
 jupyter notebook
+```
 
 7. 远程访问:
+```
 ssh username@address_of_remote -L localhost:1234:localhost:8888
+```
 
 8. 浏览器访问: localhost:1234
