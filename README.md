@@ -45,6 +45,7 @@ Python 3.6 version * - Download
 ```
 # 添加
 sudo vim /etc/modprobe.d/blacklist.conf
+
 blacklist vga16fb 
 blacklist nouveau 
 blacklist rivafb 
@@ -75,8 +76,9 @@ sudo sh NVIDIA-Linux-x86_64-390.25.run -no-x-check -no-nouveau-check -no-opengl-
 sudo chmod a+x cuda_9.0.176_384.81_linux.run
 # 安装 询问'Install NVIDIA Accelerated Graphics Driver for......'，选择N
 sudo sh cuda_9.0.176_384.81_linux.run
-# 添加
+# 添加环境变量
 vim ~/.bashrc
+
 export PATH=$PATH:/usr/local/cuda-9.0/bin
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64
 ```
@@ -85,8 +87,8 @@ export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64
 ```
 # 解压
 tar -zxvf cudnn-9.0-linux-x64-v7.tgz
-cd cuda
 # 链接
+cd cuda
 sudo cp lib64/* /usr/local/cuda/lib64/
 sudo cp include/* /usr/local/cuda/include/
 ```
@@ -105,7 +107,7 @@ nvcc -V
 ```
 # 权限
 sudo chmod a+x Anaconda3-5.0.1-Linux-x86_64.sh
-# 安装 询问安装路径，默认回车 询问环境变量，选择yes
+# 安装 1.询问安装路径，默认回车 2.询问环境变量，选择yes
 ./Anaconda3-5.0.1-Linux-x86_64.sh
 # 重新加载环境变量
 source ~/.bashrc
@@ -123,7 +125,7 @@ pip install torchvision
 pip install jupyter
 ```
 
-2. 安装远程登录:
+2. 安装 OpenSSH:
 ```
 sudo apt-get install openssh-server
 ```
@@ -145,7 +147,7 @@ jupyter notebook --generate-config
 5. 修改配置文件:
 ```
 vim ~/.jupyter/jupyter_notebook_config.py
-# 修改
+
 c.NotebookApp.ip = '*'
 c.NotebookApp.password = u'sha1:......加密密文'
 c.NotebookApp.open_browser = False
@@ -162,4 +164,4 @@ jupyter notebook
 ssh username@address_of_remote -L localhost:1234:localhost:8888
 ```
 
-8. 浏览器访问: localhost:1234
+8. 浏览器访问: http://localhost:1234
