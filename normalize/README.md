@@ -8,12 +8,12 @@
 
 #### 1. Get mean and std
 ```
-$ python calc.py --dataset mnist/fashionmnist/cifar10/cifar1000
+$ python calc.py --dataset mnist or fashionmnist or cifar10 or cifar1000
 ```
 
 #### 2. Train the model
 ```
-$ python main.py --dataset mnist
+$ python main.py --dataset mnist or fashionmnist or cifar10 or cifar1000
 ```
 
 ## 结果
