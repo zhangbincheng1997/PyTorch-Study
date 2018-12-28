@@ -28,21 +28,22 @@ Python 3.6 version * - Download
 
 7. 禁用 lightdm 桌面服务: sudo service lightdm stop (关键！一定要执行！)
 
-8. 禁用 nouveau 显卡驱动: sudo vim /etc/modprobe.d/blacklist.conf
+8. 禁用 nouveau 显卡驱动: 
 ```
-# 添加
-sudo vim /etc/modprobe.d/blacklist.conf
-
-blacklist vga16fb 
-blacklist nouveau 
-blacklist rivafb 
-blacklist rivatv 
+# 1.添加黑名单到 sudo vim /etc/modprobe.d/blacklist.conf
+blacklist vga16fb
+blacklist nouveau
+blacklist rivafb
+blacklist rivatv
 blacklist nvidiafb
-# 更新内核
+
+# 2. 更新内核
 sudo update-initramfs -u
-# 重启系统
+
+# 3. 重启系统
 sudo reboot
-# 检查屏蔽
+
+# 4. 检查屏蔽
 lsmod | grep nouveau
 ```
 
@@ -73,7 +74,7 @@ sudo sh cuda_9.0.176_384.81_linux.run
 # 询问'Install NVIDIA Accelerated Graphics Driver for......'，选择N
 ```
 
-3. 添加环境变量 vim ~/.bashrc
+3. 添加环境变量到 vim ~/.bashrc
 ```
 export PATH=$PATH:/usr/local/cuda-9.0/bin
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64
@@ -100,7 +101,6 @@ nvcc -V     # 检测CUDA
 ```
 
 ### 安装 Anaconda
-https://www.anaconda.com/
 1. 权限
 ```
 sudo chmod a+x Anaconda3-5.0.1-Linux-x86_64.sh
@@ -131,12 +131,12 @@ conda install pytorch torchvision -c pytorch
 ```
 
 ### 安装 Jupyter
-1. 安装 Jupyter:
+1. 安装 Jupyter
 ```
 pip install jupyter
 ```
 
-2. 安装 OpenSSH:
+2. 安装 OpenSSH
 ```
 sudo apt-get install openssh-server
 ```
@@ -150,12 +150,12 @@ Verify password:
 Out[2]: 'sha1:......加密密文'
 ```
 
-4. 生成配置文件:
+4. 生成配置文件
 ```
 jupyter notebook --generate-config
 ```
 
-5. 修改配置文件:vim ~/.jupyter/jupyter\_notebook\_config.py
+5. 修改配置文件 vim ~/.jupyter/jupyter\_notebook\_config.py
 ```
 c.NotebookApp.ip = '*'
 c.NotebookApp.password = u'sha1:......加密密文'
@@ -163,17 +163,17 @@ c.NotebookApp.open_browser = False
 c.NotebookApp.port = 8888
 ```
 
-6. 启动 Jupyter:
+6. 启动 Jupyter
 ```
 jupyter notebook
 ```
 
-7. 远程访问:
+7. 端口转发
 ```
 ssh username@address_of_remote -L localhost:1234:localhost:8888
 ```
 
-8. 浏览器访问: http://localhost:1234
+8. 远程访问: http://localhost:1234
 
 ### 安装 Samba
 1. 安装 Samba
@@ -197,17 +197,7 @@ available = yes
 browseable = yes
 ```
 
-3. 创建目录
-```
-mkdir share
-```
-
-4. 赋予权限
-```
-chmod 777 share
-```
-
-5. 设置密码
+3. 设置密码
 ```
 sudo smbpasswd -a ubuntu
 
@@ -215,9 +205,9 @@ New SMB password: xxxxxx
 Retype new SMB password: xxxxxx
 ```
 
-6. 重启服务
+4. 重启服务
 ```
 sudo /etc/init.d/samba restart
 ```
 
-7. 共享目录：打开 \\\\IP地址（linux）\share
+5. 共享目录：smb://172.23.27.33/share/
