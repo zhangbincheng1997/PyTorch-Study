@@ -1,20 +1,7 @@
 # PyTorch-Study
 
 ## 入门
-> * 0_autograd.py 自动梯度
-> * 1_activation.py 激励函数
-> * 2_regression.py 回归
-> * 3_classification.py 分类
-> * 4_reload.py 保存提取
-> * 5_batch.py 批训练
-> * 6_optimizer.py 优化器
-
-## 高阶
-> * autoencoder/autoencoder.py 自编码
-> * cnn/cnn.py 卷积神经网络
-> * rnn/rnn.py 循环神经网络
-> * gan/mnist_gan.py 生成对抗网络 GAN
-> * gan/mnist_dcgan.py 生成对抗网络 DCGAN
+去看看莫凡教程吧：https://morvanzhou.github.io/
 
 ## 安装环境 - 1080Ti
 
@@ -39,9 +26,9 @@ Python 3.6 version * - Download
 
 6. 进入命令行模式: ctrl + alt + F1 (关键)
 
-7. 禁用 lightdm 桌面服务: sudo service lightdm stop (关键)
+7. 禁用 lightdm 桌面服务: sudo service lightdm stop (关键！一定要执行！)
 
-8. 禁用 nouveau 显卡驱动: 
+8. 禁用 nouveau 显卡驱动: sudo vim /etc/modprobe.d/blacklist.conf
 ```
 # 添加
 sudo vim /etc/modprobe.d/blacklist.conf
@@ -60,34 +47,46 @@ lsmod | grep nouveau
 ```
 
 ### 安装 NVIDIA
+1. 权限
 ```
-# 权限
 sudo chmod a+x NVIDIA-Linux-x86_64-390.20.run
-# 安装 询问'Would you like to run the nvidia-xconfig utility......'，选择N
+```
+
+2. 安装
+```
 sudo sh NVIDIA-Linux-x86_64-390.25.run -no-x-check -no-nouveau-check -no-opengl-files
+# 询问'Would you like to run the nvidia-xconfig utility......'，选择N
 # -no-x-check # 安装驱动时关闭 X 服务
 # -no-nouveau-check # 安装驱动时禁用 nouveau 驱动
 # -no-opengl-files # 只安装驱动文件，不安装 opengl 文件
 ```
 
 ### 安装 CUDA
+1. 权限
 ```
-# 权限
 sudo chmod a+x cuda_9.0.176_384.81_linux.run
-# 安装 询问'Install NVIDIA Accelerated Graphics Driver for......'，选择N
-sudo sh cuda_9.0.176_384.81_linux.run
-# 添加环境变量
-vim ~/.bashrc
+```
 
+2. 安装
+```
+sudo sh cuda_9.0.176_384.81_linux.run
+# 询问'Install NVIDIA Accelerated Graphics Driver for......'，选择N
+```
+
+3. 添加环境变量 vim ~/.bashrc
+```
 export PATH=$PATH:/usr/local/cuda-9.0/bin
 export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64
 ```
 
 ### 安装 cuDNN
+1. 解压
 ```
-# 解压
 tar -zxvf cudnn-9.0-linux-x64-v7.tgz
-# 链接
+```
+
+2. 链接
+```
 cd cuda
 sudo cp lib64/* /usr/local/cuda/lib64/
 sudo cp include/* /usr/local/cuda/include/
@@ -95,28 +94,40 @@ sudo cp include/* /usr/local/cuda/include/
 
 ### 检测环境
 ```
-# 重启
-sudo reboot
-# 驱动
-nvidia-smi
-# CUDA
-nvcc -V
+sudo reboot # 重启
+nvidia-smi  # 检测驱动
+nvcc -V     # 检测CUDA
 ```
 
 ### 安装 Anaconda
+https://www.anaconda.com/
+1. 权限
 ```
-# 权限
 sudo chmod a+x Anaconda3-5.0.1-Linux-x86_64.sh
-# 安装 1.询问安装路径，默认回车 2.询问环境变量，选择yes
+```
+
+2. 安装
+```
 ./Anaconda3-5.0.1-Linux-x86_64.sh
-# 重新加载环境变量
+# 询问安装路径，默认回车
+# 询问环境变量，选择yes
+```
+
+3. 重新加载环境变量
+```
 source ~/.bashrc
 ```
 
 ### 安装 PyTorch
+https://pytorch.org/
+1. pip方式
 ```
-pip install http://download.pytorch.org/whl/cu90/torch-0.3.0.post4-cp36-cp36m-linux_x86_64.whl
-pip install torchvision
+pip install torch torchvision
+```
+
+2. conda方式
+```
+conda install pytorch torchvision -c pytorch
 ```
 
 ### 安装 Jupyter
@@ -144,10 +155,8 @@ Out[2]: 'sha1:......加密密文'
 jupyter notebook --generate-config
 ```
 
-5. 修改配置文件:
+5. 修改配置文件:vim ~/.jupyter/jupyter\_notebook\_config.py
 ```
-vim ~/.jupyter/jupyter_notebook_config.py
-
 c.NotebookApp.ip = '*'
 c.NotebookApp.password = u'sha1:......加密密文'
 c.NotebookApp.open_browser = False
@@ -165,3 +174,50 @@ ssh username@address_of_remote -L localhost:1234:localhost:8888
 ```
 
 8. 浏览器访问: http://localhost:1234
+
+### 安装 Samba
+1. 安装 Samba
+```
+sudo apt-get install samba
+```
+
+2. 修改配置文件 sudo vim /etc/samba/smb.conf
+```
+[share]
+comment = Shared Folder for zzz
+path = /home/share
+public = yes
+writable = yes
+valid users = ubuntu
+create mask = 0755
+directory mask = 0755
+force user = nobody
+force group = nogroup
+available = yes
+browseable = yes
+```
+
+3. 创建目录
+```
+mkdir share
+```
+
+4. 赋予权限
+```
+chmod 777 share
+```
+
+5. 设置密码
+```
+sudo smbpasswd -a ubuntu
+
+New SMB password: xxxxxx
+Retype new SMB password: xxxxxx
+```
+
+6. 重启服务
+```
+sudo /etc/init.d/samba restart
+```
+
+7. 共享目录：打开 \\\\IP地址（linux）\share
