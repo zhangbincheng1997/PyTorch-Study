@@ -1,36 +1,41 @@
 # PyTorch-Study
 
-## 入门
-去看看莫凡教程吧：https://morvanzhou.github.io/
-
 ## 安装环境 - 1080Ti
 
 ### 准备工作
-1. 下载 NVIDIA390:
+1. 下载 NVIDIA418:
 http://www.nvidia.cn/Download/index.aspx
 GeForce - GeForce 10 Series - GeForce GTX 1080 Ti - Linux 64-bit - Chinese(Simplified)
+> * https://www.nvidia.cn/content/DriverDownload-March2009/confirmation.php?url=/XFree86/Linux-x86_64/418.43/NVIDIA-Linux-x86_64-418.43.run&lang=cn&type=TITAN
 
-2. 下载 CUDA9.0:
-https://developer.nvidia.com/cuda-90-download-archive
+2. 下载 CUDA10.0:
+https://developer.nvidia.com/cuda-downloads
 Linux - x86_64 - Ubuntu - 16.04 - runfile(local)
+> * https://developer.nvidia.com/compute/cuda/10.0/Prod/local_installers/cuda_10.0.130_410.48_linux
 
-3. 下载 cuDNN7.0:
+3. 下载 cuDNN10.0:
 https://developer.nvidia.com/rdp/cudnn-download
-cuDNN v7.0.5 Library for Linux
+Download cuDNN v7.5.0 for CUDA10.0 - cuDNN Library for Linux
+> * https://developer.nvidia.com/compute/machine-learning/cudnn/secure/v7.5.0.56/prod/10.0_20190219/cudnn-10.0-linux-x64-v7.5.0.56.tgz
 
-4. 下载:
-Anaconda3.6 https://www.anaconda.com/download/#linux
-Python 3.6 version * - Download
+4. 下载 Anaconda3.5:
+> * https://repo.anaconda.com/archive/Anaconda3-5.0.0-Linux-x86_64.sh
+> * https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.0.0-Linux-x86_64.sh
 
 5. 关闭 BIOS 安全启动
 
 6. 进入命令行模式: ctrl + alt + F1 (关键)
 
-7. 禁用 lightdm 桌面服务: sudo service lightdm stop (关键！一定要执行！)
-
-8. 禁用 nouveau 显卡驱动: 
+7. 禁用 lightdm 桌面服务
 ```
-# 1.添加黑名单到 sudo vim /etc/modprobe.d/blacklist.conf
+sudo service lightdm stop
+```
+
+8. 禁用 nouveau 显卡驱动
+```
+# 1.添加黑名单
+sudo vim /etc/modprobe.d/blacklist.conf
+
 blacklist vga16fb
 blacklist nouveau
 blacklist rivafb
@@ -50,40 +55,39 @@ lsmod | grep nouveau
 ### 安装 NVIDIA
 1. 权限
 ```
-sudo chmod a+x NVIDIA-Linux-x86_64-390.20.run
+sudo chmod a+x NVIDIA-Linux-x86_64-418.43.run
 ```
 
 2. 安装
 ```
-sudo sh NVIDIA-Linux-x86_64-390.25.run -no-x-check -no-nouveau-check -no-opengl-files
-# 询问'Would you like to run the nvidia-xconfig utility......'，选择N
-# -no-x-check # 安装驱动时关闭 X 服务
-# -no-nouveau-check # 安装驱动时禁用 nouveau 驱动
-# -no-opengl-files # 只安装驱动文件，不安装 opengl 文件
+sudo sh NVIDIA-Linux-x86_64-418.43.run -no-opengl-files
+# -no-opengl-files # 只安装驱动文件，不安装 opengl 文件（核显输出，独显运算）
 ```
 
 ### 安装 CUDA
 1. 权限
 ```
-sudo chmod a+x cuda_9.0.176_384.81_linux.run
+sudo chmod a+x cuda_10.0.130_410.48_linux.run
 ```
 
 2. 安装
 ```
-sudo sh cuda_9.0.176_384.81_linux.run
+sudo sh cuda_10.0.130_410.48_linux.run
 # 询问'Install NVIDIA Accelerated Graphics Driver for......'，选择N
 ```
 
-3. 添加环境变量到 vim ~/.bashrc
+3. 添加环境变量
 ```
-export PATH=$PATH:/usr/local/cuda-9.0/bin
-export LD_LIBRARY_PATH=/usr/local/cuda-9.0/lib64
+vim ~/.bashrc
+
+export PATH=$PATH:/usr/local/cuda-10.0/bin
+export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64
 ```
 
 ### 安装 cuDNN
 1. 解压
 ```
-tar -zxvf cudnn-9.0-linux-x64-v7.tgz
+tar -zxvf cudnn-10.0-linux-x64-v7.5.0.56.tgz
 ```
 
 2. 链接
@@ -100,10 +104,28 @@ nvidia-smi  # 检测驱动
 nvcc -V     # 检测CUDA
 ```
 
+### [更新源](https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/https://mirror.tuna.tsinghua.edu.cn/help/ubuntu/)
+Ubuntu 的软件源配置文件是 /etc/apt/sources.list。将系统自带的该文件做个备份，将该文件替换为下面内容，即可使用 TUNA 的软件源镜像。
+```
+# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+
+# 预发布软件源，不建议启用
+# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+```
+
 ### 安装 Anaconda
 1. 权限
 ```
-sudo chmod a+x Anaconda3-5.0.1-Linux-x86_64.sh
+sudo chmod a+x Anaconda3-5.0.0-Linux-x86_64.sh
 ```
 
 2. 安装
@@ -113,21 +135,21 @@ sudo chmod a+x Anaconda3-5.0.1-Linux-x86_64.sh
 # 询问环境变量，选择yes
 ```
 
-3. 重新加载环境变量
+3. 强制更新环境变量
 ```
 source ~/.bashrc
 ```
 
 ### 安装 PyTorch
-https://pytorch.org/
 1. pip方式
 ```
-pip install torch torchvision
+pip install https://download.pytorch.org/whl/cu100/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl
+pip install torchvision
 ```
 
 2. conda方式
 ```
-conda install pytorch torchvision -c pytorch
+conda install pytorch torchvision cudatoolkit=10.0 -c pytorch
 ```
 
 ### 安装 Jupyter
@@ -155,8 +177,10 @@ Out[2]: 'sha1:......加密密文'
 jupyter notebook --generate-config
 ```
 
-5. 修改配置文件 vim ~/.jupyter/jupyter\_notebook\_config.py
+5. 修改配置文件
 ```
+vim ~/.jupyter/jupyter_notebook_config.py
+
 c.NotebookApp.ip = '*'
 c.NotebookApp.password = u'sha1:......加密密文'
 c.NotebookApp.open_browser = False
@@ -170,10 +194,13 @@ jupyter notebook
 
 7. 端口转发
 ```
-ssh username@address_of_remote -L localhost:1234:localhost:8888
+ssh username@server_ip -L localhost:1234:localhost:8888
 ```
 
-8. 远程访问: http://localhost:1234
+8. 远程访问
+```
+http://localhost:1234
+```
 
 ### 安装 Samba
 1. 安装 Samba
@@ -181,10 +208,12 @@ ssh username@address_of_remote -L localhost:1234:localhost:8888
 sudo apt-get install samba
 ```
 
-2. 修改配置文件 sudo vim /etc/samba/smb.conf
+2. 修改配置文件
 ```
+sudo vim /etc/samba/smb.conf
+
 [share]
-comment = Shared Folder for zzz
+comment = Shared Folder
 path = /home/share
 public = yes
 writable = yes
@@ -197,9 +226,9 @@ available = yes
 browseable = yes
 ```
 
-3. 设置密码
+3. 设置登录密码
 ```
-sudo smbpasswd -a ubuntu
+sudo smbpasswd -a username
 
 New SMB password: xxxxxx
 Retype new SMB password: xxxxxx
@@ -207,7 +236,10 @@ Retype new SMB password: xxxxxx
 
 4. 重启服务
 ```
-sudo /etc/init.d/samba restart
+sudo samba restart
 ```
 
-5. 共享目录：smb://172.23.27.33/share/
+5. 打开共享目录
+```
+smb://server_ip/share/
+```
