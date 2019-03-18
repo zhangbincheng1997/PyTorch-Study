@@ -134,7 +134,6 @@ $ vim ~/.jupyter/jupyter_notebook_config.py
 
 c.NotebookApp.ip = '*'
 c.NotebookApp.password = u'sha1:......加密密文'
-c.NotebookApp.port = 8888
 ```
 
 6. 启动 Jupyter
@@ -167,15 +166,15 @@ writable = yes
 valid users = ubuntu
 create mask = 0755
 directory mask = 0755
-force user = nobody
-force group = nogroup
+force user = ubuntu
+force group = ubuntu
 available = yes
 browseable = yes
 ```
 
 3. 设置登录密码
 ```
-$ sudo smbpasswd -a username
+$ sudo smbpasswd -a ubuntu
 ```
 
 4. 重启服务
